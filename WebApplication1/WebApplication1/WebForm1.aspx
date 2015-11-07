@@ -8,12 +8,12 @@
 </head>
 <body>
     <form id="form1" runat="server">      
-    
+        <div id ="inputBox">
                 First name: <input type="text" name="FirstName" value="First Name"><br>
                 Last name: <input type="text" name="LastName" value="Last Name"><br>
                 Plant: <input type="text" name="Plant" value="Plant"><br>
                 Shift: <input type="text" name="Shift" value="Shift"><br>     
-       
+        </div>
         <div id="dropBoxDiv">            
             <select onchange="showSelect2()">
               
