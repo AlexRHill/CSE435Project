@@ -8,9 +8,18 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div>
-        <img src="http://www.ceco.net/zDepot/drawing-png-files/audi-tt-roadste-convertible-vehicles-cars-free-autocad-blocks-92.dwg.png" />
+    <div id="diagramDiv">
+        <img onclick="addDefect()" src="http://www.ceco.net/zDepot/drawing-png-files/audi-tt-roadste-convertible-vehicles-cars-free-autocad-blocks-92.dwg.png" />
     </div>
+    <div id="defectDiv"></div>
     </form>
 </body>
 </html>
+<script>
+    function addDefect() {
+        console.log('add Defect');
+    }
+
+   
+
+</script>
