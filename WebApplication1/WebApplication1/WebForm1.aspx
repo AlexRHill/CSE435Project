@@ -7,20 +7,27 @@
     <title></title>
 </head>
 <body>
-    <form id="form1" runat="server">
+    <form id="form1" runat="server">      
+    
+                First name: <input type="text" name="FirstName" value="First Name"><br>
+                Last name: <input type="text" name="LastName" value="Last Name"><br>
+                Plant: <input type="text" name="Plant" value="Plant"><br>
+                Shift: <input type="text" name="Shift" value="Shift"><br>     
+       
         <div id="dropBoxDiv">            
             <select onchange="showSelect2()">
-               <optgroup label = "Choose Vehicle">
-              <option value="volvo">Volvo</option>
+              
+              <option value="volvo">Choose Vehicle</option>
               <option value="saab" >Saab</option>
               <option value="mercedes" >Mercedes</option>
               <option value="audi" >Audi</option>
-               </optgroup>
+             
             </select>
-            <select id="select2">
-              <option value="top" onselect="showDiagram()">top</option>
-              <option value="left" onselect="showDiagram()">left</option>
-              <option value="right" onselect="showDiagram()">right</option>              
+            <select onchange="showDiagram()" id="select2">
+              <option value="top" >Choose Side</option>
+              <option value="left" >left</option>
+              <option value="right">top</option>  
+                <option value="right">right</option>               
             </select>
         </div>
 
