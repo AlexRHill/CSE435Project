@@ -32,7 +32,7 @@
         </div>
 
         <div id="diagramDiv">
-            <img onclick="addDefect()" src="http://www.ceco.net/zDepot/drawing-png-files/audi-tt-roadste-convertible-vehicles-cars-free-autocad-blocks-92.dwg.png" />
+            <img onclick="addDefect(event)" src="http://www.ceco.net/zDepot/drawing-png-files/audi-tt-roadste-convertible-vehicles-cars-free-autocad-blocks-92.dwg.png" />
         </div>
         <div id="defectDiv" class="defectDiv">
             <h2>Defect</h2>
@@ -51,14 +51,31 @@
     function showSelect2() {
         $("#select2").show();
     }
-    function addDefect() {
+    function addDefect(ev) {
         console.log('add Defect');
         $("#defectDiv").show();
+
+        mouseX = ev.pageX;
+        mouseY = ev.pageY;
+        //alert(mouseX + ' ' + mouseY);
+        var color = '#000000';
+        var size = '4px';
+        $("body").append(
+            $('<div></div>')
+                .css('position', 'absolute')
+                .css('top', mouseY + 'px')
+                .css('left', mouseX + 'px')
+                .css('width', size)
+                .css('height', size)
+                .css('background-color', color)
+        );
     }
 
     function showDiagram() {
         $("#diagramDiv").show();
     }
+
+    
 </script>
 
 <style>
