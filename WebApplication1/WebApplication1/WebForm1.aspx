@@ -8,6 +8,16 @@
 </head>
 <body>
     <form id="form1" runat="server">
+        <div>
+            <form action="demo_form.asp">
+                First name: <input type="text" name="FirstName" value="First Name"><br>
+                Last name: <input type="text" name="LastName" value="Last Name"><br>
+                Plant: <input type="text" name="Plant" value="Plant"><br>
+                Shift: <input type="text" name="Shift" value="Shift"><br>
+
+
+            </form>
+        </div>
     <div id="diagramDiv">
         <img onclick="addDefect()" src="http://www.ceco.net/zDepot/drawing-png-files/audi-tt-roadste-convertible-vehicles-cars-free-autocad-blocks-92.dwg.png" />
     </div>
