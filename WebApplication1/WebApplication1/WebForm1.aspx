@@ -8,21 +8,42 @@
 </head>
 <body>
     <form id="form1" runat="server">
-    <div id="diagramDiv">
-        <img onclick="addDefect()" src="http://www.ceco.net/zDepot/drawing-png-files/audi-tt-roadste-convertible-vehicles-cars-free-autocad-blocks-92.dwg.png" />
-    </div>
-    <div id="defectDiv" class="defectDiv">
-        <h2>Defect</h2>
-        <p contenteditable="true">Type:</p>
-        <p contenteditable="true">Severity:</p>
-    </div>
+        <div id="dropBoxDiv">            
+            <select onchange="showSelect2()">
+               <optgroup label = "Choose Vehicle">
+              <option value="volvo">Volvo</option>
+              <option value="saab" >Saab</option>
+              <option value="mercedes" >Mercedes</option>
+              <option value="audi" >Audi</option>
+               </optgroup>
+            </select>
+            <select id="select2">
+              <option value="top" onselect="showDiagram()">top</option>
+              <option value="left" onselect="showDiagram()">left</option>
+              <option value="right" onselect="showDiagram()">right</option>              
+            </select>
+        </div>
+
+        <div id="diagramDiv">
+            <img onclick="addDefect()" src="http://www.ceco.net/zDepot/drawing-png-files/audi-tt-roadste-convertible-vehicles-cars-free-autocad-blocks-92.dwg.png" />
+        </div>
+        <div id="defectDiv" class="defectDiv">
+            <h2>Defect</h2>
+            <p contenteditable="true">Type:</p>
+            <p contenteditable="true">Severity:</p>
+        </div>
     </form>
 </body>
 </html>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
 <script>
+    $("#select2").hide();
     $("#defectDiv").hide();
     $("#diagramDiv").hide();
+
+    function showSelect2() {
+        $("#select2").show();
+    }
     function addDefect() {
         console.log('add Defect');
         $("#defectDiv").show();
