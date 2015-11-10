@@ -38,6 +38,7 @@
             <h2>Defect</h2>
             <p contenteditable="true">Type:</p>
             <p contenteditable="true">Severity:</p>
+			<input type="button" value="Undo" runat="server" onclick="undoDefect()" class="button">
         </div>
     </form>
 </body>
@@ -47,17 +48,17 @@
     $("#select2").hide();
     $("#defectDiv").hide();
     $("#diagramDiv").hide();
-
+	var defect_count = 0;
     function showSelect2() {
         $("#select2").show();
     }
     function addDefect(ev) {
         console.log('add Defect');
         $("#defectDiv").show();
-
         mouseX = ev.pageX;
         mouseY = ev.pageY;
         //alert(mouseX + ' ' + mouseY);
+		defect_count = defect_count + 1;
         var color = '#000000';
         var size = '4px';
         $("body").append(
@@ -70,11 +71,16 @@
                 .css('background-color', color)
         );
     }
-
     function showDiagram() {
         $("#diagramDiv").show();
     }
-
+	
+	function undoDefect() {
+	    if (defect_count > 0) {
+			defect_count = defect_count - 1;
+			$("body :last").remove();
+		}
+    }
     
 </script>
 
@@ -82,7 +88,6 @@
     .defectDiv {border:2px solid #0094ff;}
     .defectDiv h2 {background:#0094ff;color:white;padding:10px;}
     .defectDiv p {color:#333;padding:10px;}
-
     .defectDiv {
     -moz-border-radius-topright:5px;
     -moz-border-radius-topleft:5px;
@@ -91,5 +96,26 @@
     border-top-left-radius:5px;
     border-top-right-radius:5px;
 }
+	.button{
+	border-radius: 0.5em;
+	text-decoration: none;
+	color: white;
+	padding: 1em;
+	background-color: #329bd8;
+	text-transform: uppercase;
+	font-weight: bold;
+	margin: 5px 5px 5px 5px;
+}
 
+	.button:hover {
+	background-color: transparent;
+	border: 0.15em #329bd8 solid;
+	color: #329bd8;
+}
+
+	.button:active {
+	background-color: transparent;
+	border: 0.15em #5e8ca5 solid;
+	color: #5e8ca5;
+}
 </style>
