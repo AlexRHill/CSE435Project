@@ -14,17 +14,22 @@
                 Plant: <input type="text" name="Plant" value="Plant"><br>
                 Shift: <input type="text" name="Shift" value="Shift"><br>     
         </div>
+		<br>
+		<div id="SideVars">
+			Text edited.
+		</div>
+		<br>
         <div id="dropBoxDiv">            
             <select id="car_type" name="car_type" onchange="showSide()">
               
-              <option value="volvo">Choose Vehicle</option>
+              <option value="default_type" selected="selected">Choose Vehicle</option>
               <option value="saab" >Saab</option>
               <option value="mercedes" >Mercedes</option>
               <option value="audi" >Audi</option>
              
             </select>
             <select id="car_side" name="car_side" onchange="showDiagram()">
-              <option value="top" >Choose Side</option>
+              <option value="default_side" selected="selected">Choose Side</option>
               <option value="left" >left</option>
               <option value="top">top</option>  
                 <option value="right">right</option>               
@@ -32,14 +37,32 @@
         </div>
 
         <div id="diagramDiv" class="diagramDiv">
-            <img id="car_image" name="car_image" onclick="addDefect(event)" src="http://www.ceco.net/zDepot/drawing-png-files/audi-tt-roadste-convertible-vehicles-cars-free-autocad-blocks-92.dwg.png" />
-        </div>
+			<br>
+			<input type="button" value="Add Side to Report" runat="server" onclick="submitSide()" class="button">
+            <br>
+			<img id="car_image" name="car_image" onclick="addDefect(event)" src="http://www.ceco.net/zDepot/drawing-png-files/audi-tt-roadste-convertible-vehicles-cars-free-autocad-blocks-92.dwg.png" />
+		</div>
         <div id="defectDiv" class="defectDiv">
             <h2>Defect</h2>
-            <p contenteditable="true">Type:</p>
-            <p contenteditable="true">Severity:</p>
+            <!--<p contenteditable="true">Type:</p>
+            <p contenteditable="true">Severity:</p>-->
+			<select id="defect_type" name="defect_type">       
+              <option value="UNK" >UNK</option>
+              <option value="PRD" >PRD</option>
+              <option value="VIJ" >VIJ</option>
+              <option value="DMM" >DMM</option>             
+            </select>
+            <select id="defect_severity" name="defect_severity">
+              <option value="1" >1</option>
+              <option value="5" >5</option>
+              <option value="10">10</option>               
+            </select>
+			<input type="button" value="Add Defect" runat="server" onclick="addDefectToList()" class="button">
 			<input type="button" value="Undo" runat="server" onclick="undoDefect()" class="button">
         </div>
+		
+		<!--<input type="button" value="Add Side to Report" runat="server" onclick="submitSide()" class="button">-->
+		<br>
 		<input type="button" value="Submit" runat="server" onclick="submitReport()" class="button">
     </form>
 </body>
@@ -49,9 +72,24 @@
     $("#car_side").hide();
     $("#defectDiv").hide();
     $("#diagramDiv").hide();
+	$("#car_type").val("default_type");
+	$("#car_side").val("default_side");
 	var defect_count = 0;
 	var type;
 	var side;
+	var dType;
+	var severity;
+	var tops = 0;
+	var rights = 0;
+	var lefts = 0;
+	var adding_defect = false;
+	var session_array = [];
+	var defects = [];
+	var strFinal = "Tops: " + tops + " Rights: " + rights + " Lefts: " + lefts;
+	$("#SideVars").html(strFinal);
+	//var strArray = session_array.toString();
+	//$("#ArrayVar").html(strArray);
+	//var portion_array = [];
     function showSide() {
         $("#car_side").show();
 		if ($("#diagramDiv").is(":visible")) {
@@ -59,12 +97,18 @@
 		}
     }
     function addDefect(ev) {
+		if (adding_defect == false) {
         console.log('add Defect');
+		$("#defect_type").val("UNK");
+		$("#defect_severity").val("1");
         $("#defectDiv").show();
         mouseX = ev.pageX;
         mouseY = ev.pageY;
         //alert(mouseX + ' ' + mouseY);
 		defect_count = defect_count + 1;
+		//defect_object = {};
+		//defect_object.type = 
+		//defect_array = 
         var color = '#000000';
         var size = '4px';
         $("body").append(
@@ -76,8 +120,25 @@
                 .css('height', size)
                 .css('background-color', color)
         );
+		adding_defect = true;
+		}
     }
-    function showDiagram() {
+	
+	function addDefectToList() {
+		//defect_count = defect_count + 1;
+		var defect_object = {};
+		dType = $("#defect_type").val();
+		severity = $("#defect_severity").val();
+		defect_object.type = dType;
+		defect_object.severity = severity;
+		// can add coordinates here as well
+		defects.push(defect_object);
+		$("body :last").css('background-color', 'blue');
+		$("#defectDiv").hide();
+		adding_defect = false;
+	}
+	
+    function showDiagram() {	
 		type = $("#car_type").val();
 		side = $("#car_side").val();
 		if (type === "saab") {
@@ -113,24 +174,71 @@
 				$("#car_image").attr("src", "Assets/diagram-right.jpg");
 			}
 		}
+		
+		clearDefects();
+		
+        $("#diagramDiv").show();
+    }
+	
+	function clearDefects() {
 		if (defect_count > 0) {
 			while (defect_count > 0) {
 				defect_count = defect_count - 1;
 				$("body :last").remove();
 			}
 		}
-        $("#diagramDiv").show();
-    }
+		adding_defect = false;
+		defects = [];
+	}
 	
 	function undoDefect() {
 	    if (defect_count > 0) {
 			defect_count = defect_count - 1;
 			$("body :last").remove();
+			$("#defectDiv").hide();
+			adding_defect = false;
 		}
     }
 	
-	function submitReport() {
+	function submitSide() {
+		type = $("#car_type").val();
+		side = $("#car_side").val();
+		if (side === "left") {
+			lefts = lefts + 1;
+		}
+		else if (side === "top") {
+			tops = tops + 1;
+		}
+		else if (side === "right") {
+			rights = rights + 1;
+		}
+		
+		var side_object = {};
+		side_object.type = type;
+		side_object.side = side;
+		side_object.defects = defects;
+		session_array.push(side_object);
+		strFinal = "Tops: " + tops + " Rights: " + rights + " Lefts: " + lefts;
+		$("#SideVars").html(strFinal);
+		console.log(session_array);
+		clearDefects();
+		$("#car_type").val("default_type");
+		$("#car_side").val("default_side");
+		$("#diagramDiv").hide();
+	}
 	
+	function submitReport() {
+		//$("#inputBox").hide();
+		var session_object = { report : session_array };
+		var session_json = JSON.stringify(session_object);
+		
+		$.ajax({
+		  url: "report.php",
+                  type: "POST",
+                  dataType: 'json',
+		  data: session_json,
+		  success: function(response){}
+                });
 	}
     
 </script>
