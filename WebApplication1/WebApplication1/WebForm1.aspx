@@ -7,12 +7,145 @@
     <title></title>
 </head>
 <body>
+    <div id="reportContainer" style="display: none">
+    <div  id="date"></div>
+    <div id="analyst"></div>
+        <div id="headerInfo"></div>
+        <table id="sevOverview" border="5"    width="20%"   cellpadding="1" cellspacing="1">
+       <tr>
+          <th colspan="3"><h3>Severity Overview</h3>
+          </th>
+       </tr>
+       <tr>
+          <th>Severity</th>
+          <th>Total</th>
+          <th>DPU</th>
+           
+       </tr>
+       <tr align="center">
+          <td>Sev 1</td>
+          <td></td>
+          <td></td>
+       </tr>
+       <tr align="center">
+          <td>Sev 5</td>
+          <td></td>
+          <td></td>
+       </tr>
+       <tr align="center">
+          <td>Sev 10</td>
+          <td></td>
+          <td></td>
+       </tr>
+       <tr align="center">
+          <td>Overall</td>
+          <td></td>
+          <td></td>
+       </tr>
+    </table>
+        <table id="rightTable" border="5"    width="20%"   cellpadding="1" cellspacing="1">
+       <tr>
+          <th colspan="3"><h3>Right Side</h3>
+          </th>
+       </tr>
+       <tr>
+          <th>Severity</th>
+          <th>Total</th>
+          <th>DPU</th>
+           
+       </tr>
+       <tr align="center">
+          <td>Sev 1</td>
+          <td></td>
+          <td></td>
+       </tr>
+       <tr align="center">
+          <td>Sev 5</td>
+          <td></td>
+          <td></td>
+       </tr>
+       <tr align="center">
+          <td>Sev 10</td>
+          <td></td>
+          <td></td>
+       </tr>
+       <tr align="center">
+          <td>Overall</td>
+          <td></td>
+          <td></td>
+       </tr>
+    </table>
+    <table id="leftTable" border="5"    width="20%"   cellpadding="1" cellspacing="1">
+       <tr>
+          <th colspan="3"><h3>Left Side</h3>
+          </th>
+       </tr>
+       <tr>
+          <th>Severity</th>
+          <th>Total</th>
+          <th>DPU</th>
+           
+       </tr>
+       <tr align="center">
+          <td>Sev 1</td>
+          <td></td>
+          <td></td>
+       </tr>
+       <tr align="center">
+          <td>Sev 5</td>
+          <td></td>
+          <td></td>
+       </tr>
+       <tr align="center">
+          <td>Sev 10</td>
+          <td></td>
+          <td></td>
+       </tr>
+       <tr align="center">
+          <td>Overall</td>
+          <td></td>
+          <td></td>
+       </tr>
+    </table>
+        <table id="topTable" border="5"    width="20%"   cellpadding="1" cellspacing="1">
+       <tr>
+          <th colspan="3"><h3>Top</h3>
+          </th>
+       </tr>
+       <tr>
+          <th>Severity</th>
+          <th>Total</th>
+          <th>DPU</th>
+           
+       </tr>
+       <tr align="center">
+          <td>Sev 1</td>
+          <td></td>
+          <td></td>
+       </tr>
+       <tr align="center">
+          <td>Sev 5</td>
+          <td></td>
+          <td></td>
+       </tr>
+       <tr align="center">
+          <td>Sev 10</td>
+          <td></td>
+          <td></td>
+       </tr>
+       <tr align="center">
+          <td>Overall</td>
+          <td></td>
+          <td></td>
+       </tr>
+    </table>
+ </div>
     <form id="form1" runat="server">      
         <div id ="inputBox">
-                First name: <input type="text" name="FirstName" value="First Name"><br>
-                Last name: <input type="text" name="LastName" value="Last Name"><br>
-                Plant: <input type="text" name="Plant" value="Plant"><br>
-                Shift: <input type="text" name="Shift" value="Shift"><br>     
+                First name: <input type="text" id="FirstName" value=""><br>
+                Last name: <input type="text" id="LastName" value=""><br>
+                Plant: <input type="text" id="Plant" value=""><br>
+                Shift: <input type="text" id="Shift" value=""><br>     
         </div>
 		<br>
 		<div id="SideVars">
@@ -37,11 +170,13 @@
         </div>
 
         <div id="diagramDiv" class="diagramDiv">
-			<br>
-			<input type="button" value="Add Side to Report" runat="server" onclick="submitSide()" class="button">
-            <br>
-			<img id="car_image" name="car_image" onclick="addDefect(event)" src="http://www.ceco.net/zDepot/drawing-png-files/audi-tt-roadste-convertible-vehicles-cars-free-autocad-blocks-92.dwg.png" />
-		</div>
+			<br/>
+			<input type="button" value="Add Side to Report" runat="server" onclick="submitSide()" class="button"/>
+            <br/>
+           
+			<img id="car_image" name="car_image" onclick="addDefect(event)" src="1" />
+		   
+        </div>
         <div id="defectDiv" class="defectDiv">
             <h2>Defect</h2>
             <!--<p contenteditable="true">Type:</p>
@@ -72,8 +207,14 @@
     $("#car_side").hide();
     $("#defectDiv").hide();
     $("#diagramDiv").hide();
+    $("#reportContainer").hide();
 	$("#car_type").val("default_type");
 	$("#car_side").val("default_side");
+	var startTime = new Date().toLocaleTimeString().toString();
+	startTime = startTime.split(':')[0] + ':' + startTime.split(':')[1] + ' ' + startTime.split(' ')[1];
+	var totalDefects = 0;
+	var sevTotals = {"top": {1:0, 5:0, 10:0 }, "left" : {1:0, 5:0, 10:0 }, "right": {1:0, 5:0, 10:0 }};
+	var defectTotals = {"UNK":0,"PRD":0,"VIJ":0,"DMM":0};
 	var defect_count = 0;
 	var type;
 	var side;
@@ -86,10 +227,30 @@
 	var session_array = [];
 	var defects = [];
 	var strFinal = "Tops: " + tops + " Rights: " + rights + " Lefts: " + lefts;
+    
+    //set date
+	document.getElementById('date').innerHTML = "<b>Date:</b> " + getDate().toString();
 	$("#SideVars").html(strFinal);
 	//var strArray = session_array.toString();
 	//$("#ArrayVar").html(strArray);
-	//var portion_array = [];
+    //var portion_array = [];
+
+	function getDate() {
+	    var now = new Date();
+	    var year = now.getFullYear();
+	    var month = now.getMonth() + 1;
+	    var day = now.getDate();	 
+	    if (month.toString().length == 1) {
+	        var month = '0' + month;
+	    }
+	    if (day.toString().length == 1) {
+	        var day = '0' + day;
+	    }	    
+	    var date = year + '/' + month + '/' + day;
+	    return date;
+	}
+
+
     function showSide() {
         $("#car_side").show();
 		if ($("#diagramDiv").is(":visible")) {
@@ -98,12 +259,19 @@
     }
     function addDefect(ev) {
 		if (adding_defect == false) {
-        console.log('add Defect');
+
 		$("#defect_type").val("UNK");
 		$("#defect_severity").val("1");
+        
         $("#defectDiv").show();
-        mouseX = ev.pageX;
-        mouseY = ev.pageY;
+        relativeMouseX = ev.pageX - document.getElementById('car_image').offsetLeft;
+		relativeMouseY = ev.pageY - document.getElementById('car_image').offsetTop - 18;
+        mouseX = ev.pageX
+        mouseY = ev.pageY
+
+        document.getElementById('defectDiv').setAttribute('X',relativeMouseX);
+        document.getElementById('defectDiv').setAttribute('Y',relativeMouseY);
+
         //alert(mouseX + ' ' + mouseY);
 		defect_count = defect_count + 1;
 		//defect_object = {};
@@ -120,6 +288,8 @@
                 .css('height', size)
                 .css('background-color', color)
         );
+    
+        
 		adding_defect = true;
 		}
     }
@@ -131,8 +301,20 @@
 		severity = $("#defect_severity").val();
 		defect_object.type = dType;
 		defect_object.severity = severity;
-		// can add coordinates here as well
+	    // can add coordinates here as well
+		defect_object.X = document.getElementById('defectDiv').getAttribute('X');
+		defect_object.Y = document.getElementById('defectDiv').getAttribute('Y');
 		defects.push(defect_object);
+
+	    //track totals
+		side = $("#car_side").val();
+		sevTotals[side][severity] = sevTotals[side][severity] + 1;
+		defectTotals[dType] = defectTotals[dType] + 1;
+		console.log(sevTotals[side]);
+		console.log(sevTotals[side][severity]);
+		console.log(defectTotals[dType]);
+		totalDefects = totalDefects + 1;
+		console.log(defects);
 		$("body :last").css('background-color', 'blue');
 		$("#defectDiv").hide();
 		adding_defect = false;
@@ -231,7 +413,100 @@
 		//$("#inputBox").hide();
 		var session_object = { report : session_array };
 		var session_json = JSON.stringify(session_object);
+		console.log(JSON.stringify(session_array));
+
+	    //////create report	   
+	    //set analyst
+		document.getElementById('analyst').innerHTML = "Analyst: " + document.getElementById('FirstName').value + ' ' + document.getElementById('LastName').value;
+	    ////get rest of the header info
+        //get endTime
+		var endTime = new Date().toLocaleTimeString().toString();
+		endTime = endTime.split(':')[0] + ':' + endTime.split(':')[1] + ' ' + endTime.split(' ')[1];		
+	    //get shift
+		shift = document.getElementById("Shift").value;
+        
+	    //get total units
+		var totalunits = tops + rights + lefts;
+	    //get dpu
+		var dpu = totalunits / totalDefects;
+	    //set header info
+
+		document.getElementById('headerInfo').innerHTML = "<b>Start Time:</b> " + startTime + "&nbsp" + "End Time: " + endTime + "&nbsp" +
+            "Shift: " + shift + "&nbsp" + "Num of Units: " + totalunits + "&nbsp" + "Total Defects: " + totalDefects + "&nbsp" +
+            "DPU: " + dpu;
+        
+	    ////create tables
+	    //sev overview
 		
+		var totalsev1 = sevTotals['top'][1] + sevTotals['right'][1] + sevTotals['left'][1];
+		var totalsev5 = sevTotals['top'][5] + sevTotals['right'][5] + sevTotals['left'][5];
+		var totalsev10 = sevTotals['top'][01] + sevTotals['right'][10] + sevTotals['left'][10];
+		var sevOverall = totalsev1 + totalsev5 + totalsev10;
+
+		var table = document.getElementById('sevOverview');		
+		table.rows[2].cells[1].innerHTML = totalsev1;
+		table.rows[2].cells[2].innerHTML = totalsev1 / totalunits;
+		table.rows[3].cells[1].innerHTML = totalsev5;
+		table.rows[3].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[4].cells[1].innerHTML = totalsev5;
+		table.rows[4].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[5].cells[1].innerHTML = sevOverall;
+		table.rows[5].cells[2].innerHTML = sevOverall / totalunits;
+
+	    //right
+		var totalunits = rights;
+		var totalsev1 = sevTotals['right'][1];
+		var totalsev5 = sevTotals['right'][5];
+		var totalsev10 = sevTotals['right'][10];
+		var sevOverall = totalsev1 + totalsev5 + totalsev10;
+
+		var table = document.getElementById('rightTable');
+		table.rows[2].cells[1].innerHTML = totalsev1;
+		table.rows[2].cells[2].innerHTML = totalsev1 / totalunits;
+		table.rows[3].cells[1].innerHTML = totalsev5;
+		table.rows[3].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[4].cells[1].innerHTML = totalsev5;
+		table.rows[4].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[5].cells[1].innerHTML = sevOverall;
+		table.rows[5].cells[2].innerHTML = sevOverall / totalunits;
+
+	    //top
+		var totalunits = tops;
+		var totalsev1 = sevTotals['top'][1];
+		var totalsev5 = sevTotals['top'][5];
+		var totalsev10 = sevTotals['top'][10];
+		var sevOverall = totalsev1 + totalsev5 + totalsev10;
+
+		var table = document.getElementById('topTable');
+		table.rows[2].cells[1].innerHTML = totalsev1;
+		table.rows[2].cells[2].innerHTML = totalsev1 / totalunits;
+		table.rows[3].cells[1].innerHTML = totalsev5;
+		table.rows[3].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[4].cells[1].innerHTML = totalsev5;
+		table.rows[4].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[5].cells[1].innerHTML = sevOverall;
+		table.rows[5].cells[2].innerHTML = sevOverall / totalunits;
+
+	    //left
+		var totalunits = lefts;
+		var totalsev1 = sevTotals['left'][1];
+		var totalsev5 = sevTotals['left'][5];
+		var totalsev10 = sevTotals['left'][10];
+		var sevOverall = totalsev1 + totalsev5 + totalsev10;
+
+		var table = document.getElementById('leftTable');
+		table.rows[2].cells[1].innerHTML = totalsev1;
+		table.rows[2].cells[2].innerHTML = totalsev1 / totalunits;
+		table.rows[3].cells[1].innerHTML = totalsev5;
+		table.rows[3].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[4].cells[1].innerHTML = totalsev5;
+		table.rows[4].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[5].cells[1].innerHTML = sevOverall;
+		table.rows[5].cells[2].innerHTML = sevOverall / totalunits;
+
+		
+		$("#form1").hide();
+		$("#reportContainer").show();
 		$.ajax({
 		  url: "report.php",
                   type: "POST",
@@ -240,6 +515,8 @@
 		  success: function(response){}
                 });
 	}
+
+    
     
 </script>
 
