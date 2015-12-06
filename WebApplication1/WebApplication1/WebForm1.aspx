@@ -287,19 +287,9 @@
 		var pos = $("#car_image").position();
 		imageX = mouseX - pos.left;
 		imageY = mouseY - pos.top;
-        relativeMouseX = ev.pageX - document.getElementById('car_image').offsetLeft;
-		relativeMouseY = ev.pageY - document.getElementById('car_image').offsetTop - 18;
-		mouseX = ev.pageX;
-		mouseY = ev.pageY;
 
-        document.getElementById('defectDiv').setAttribute('X',relativeMouseX);
-        document.getElementById('defectDiv').setAttribute('Y',relativeMouseY);
-
-        //alert(mouseX + ' ' + mouseY);
 		defect_count = defect_count + 1;
-		//defect_object = {};
-		//defect_object.type = 
-		//defect_array = 
+
         var color = '#000000';
         var size = '4px';
         $("body").append(
@@ -310,12 +300,7 @@
                 .css('width', size)
                 .css('height', size)
                 .css('background-color', color)
-        );
-        
-        
-        
-    
-        
+        );        
 		adding_defect = true;
 		}
     }
@@ -327,11 +312,9 @@
 		severity = $("#defect_severity").val();
 		defect_object.type = dType;
 		defect_object.severity = severity;
-		defect_object.x = imageX;
-		defect_object.y = imageY;
+		defect_object.X = imageX;
+		defect_object.Y = imageY;
 	    // can add coordinates here as well
-		defect_object.X = document.getElementById('defectDiv').getAttribute('X');
-		defect_object.Y = document.getElementById('defectDiv').getAttribute('Y');
 		defects.push(defect_object);
         
 	    //track totals
@@ -454,54 +437,11 @@
 		var session_json = JSON.stringify(session_object);
 		console.log(JSON.stringify(session_array));
 
-	    //////create report	  
-	    //add marks
-		var color = '#000000';
-		var size = '4px';
-		console.log(defectLists["top"]);
-		defectLists["top"].forEach(function (defect) {
-		    console.log(defect);
-		    console.log(defect.Y);
-		    console.log(defect.X);
-		    $("body").append(
-                $('<div></div>')
-                    .css('position', 'absolute')
-                    .css('top', (parseInt(defect.Y) +228).toString()+ 'px')
-                    .css('left', (parseInt(defect.X) +7).toString() + 'px')
-                    .css('width', size)
-                    .css('height', size)
-                    .css('background-color', color)
-            );
-		});
-		defectLists["right"].forEach(function (defect) {
-		    console.log(defect);
-		    console.log(defect.Y);
-		    console.log(defect.X);
-		    $("body").append(
-                $('<div></div>')
-                    .css('position', 'absolute')
-                    .css('top', (parseInt(defect.Y) + 393).toString() + 'px')
-                    .css('left', (parseInt(defect.X) + 10).toString() + 'px')
-                    .css('width', size)
-                    .css('height', size)
-                    .css('background-color', color)
-            );
-		});
-		defectLists["left"].forEach(function (defect) {
-		    console.log(defect);
-		    console.log(defect.Y);
-		    console.log(defect.X);
-		    $("body").append(
-                $('<div></div>')
-                    .css('position', 'absolute')
-                    .css('top', (parseInt(defect.Y) + 66).toString() + 'px')
-                    .css('left', (parseInt(defect.X) + 10).toString() + 'px')
-                    .css('width', size)
-                    .css('height', size)
-                    .css('background-color', color)
-            );
-		});
-	    //set analyst
+		$("#form1").hide();
+		$("#reportContainer").show();
+		$(".reportMark").show();
+		
+		//set analyst
 		document.getElementById('analyst').innerHTML = "Analyst: " + document.getElementById('FirstName').value + ' ' + document.getElementById('LastName').value;
 	    ////get rest of the header info
         //get endTime
@@ -520,6 +460,59 @@
             "   Shift: " + shift +  "   Num of Units: " + totalunits + "   Total Defects: " + totalDefects +
             "   DPU: " + dpu.toFixed(2);
         
+		
+	    //////create report	  
+	    //add marks
+		var color = '#000000';
+		var size = '4px';
+		console.log(defectLists["top"]);
+		var dpos = $("#image2").offset();
+		defectLists["top"].forEach(function (defect) {
+		    console.log(defect);
+		    console.log(defect.Y);
+		    console.log(defect.X);
+			console.log(dpos);
+		    $("body").append(
+                $('<div></div>')
+                    .css('position', 'absolute')
+                    .css('top', (parseInt(defect.Y) + dpos.top).toString()+ 'px')
+                    .css('left', (parseInt(defect.X) + dpos.left).toString() + 'px')
+                    .css('width', size)
+                    .css('height', size)
+                    .css('background-color', color)
+            );
+		});
+		var dpos = $("#image3").offset();
+		defectLists["right"].forEach(function (defect) {
+		    console.log(defect);
+		    console.log(defect.Y);
+		    console.log(defect.X);
+		    $("body").append(
+                $('<div></div>')
+                    .css('position', 'absolute')
+                    .css('top', (parseInt(defect.Y) + dpos.top).toString() + 'px')
+                    .css('left', (parseInt(defect.X) + dpos.left).toString() + 'px')
+                    .css('width', size)
+                    .css('height', size)
+                    .css('background-color', color)
+            );
+		});
+		var dpos = $("#image1").offset();
+		defectLists["left"].forEach(function (defect) {
+		    console.log(defect);
+		    console.log(defect.Y);
+		    console.log(defect.X);
+		    $("body").append(
+                $('<div></div>')
+                    .css('position', 'absolute')
+                    .css('top', (parseInt(defect.Y) + dpos.top).toString() + 'px')
+                    .css('left', (parseInt(defect.X) + dpos.left).toString() + 'px')
+                    .css('width', size)
+                    .css('height', size)
+                    .css('background-color', color)
+            );
+		});
+	    
 	    ////create tables
 	    //sev overview
 		
@@ -615,9 +608,9 @@
 	    });
 		chart.render();
 
-		$("#form1").hide();
-		$("#reportContainer").show();
-		$(".reportMark").show();
+		//$("#form1").hide();
+		//$("#reportContainer").show();
+		//$(".reportMark").show();
 		$.ajax({
 		  url: "report.php",
                   type: "POST",
@@ -643,8 +636,6 @@
     border-top-left-radius:5px;
     border-top-right-radius:5px;
 }
-
-	.diagramDiv img { padding: 25px 10px 25px 10px; }
 
 	.button{
 	border-radius: 0.5em;
