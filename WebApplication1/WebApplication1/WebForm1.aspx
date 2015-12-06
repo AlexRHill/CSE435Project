@@ -241,7 +241,11 @@
 	var defects = [];
 	var strFinal = "Tops: " + tops + " Rights: " + rights + " Lefts: " + lefts;
 	var defectLists = { "top": [], "right": [], "left": []};
-
+	var imageX = 0;
+	var imageY = 0;
+	var plantBox;
+	var firstNameBox;
+	var lastNameBox;
     //set date
 	document.getElementById('date').innerHTML = "Date: " + getDate().toString();
 	$("#SideVars").html(strFinal);
@@ -277,7 +281,12 @@
 		$("#defect_type").val("UNK");
 		$("#defect_severity").val("1");
         
-        $("#defectDiv").show();
+		$("#defectDiv").show();
+		mouseX = ev.pageX;
+		mouseY = ev.pageY;
+		var pos = $("#car_image").position();
+		imageX = mouseX - pos.left;
+		imageY = mouseY - pos.top;
         relativeMouseX = ev.pageX - document.getElementById('car_image').offsetLeft;
 		relativeMouseY = ev.pageY - document.getElementById('car_image').offsetTop - 18;
 		mouseX = ev.pageX;
@@ -318,6 +327,8 @@
 		severity = $("#defect_severity").val();
 		defect_object.type = dType;
 		defect_object.severity = severity;
+		defect_object.x = imageX;
+		defect_object.y = imageY;
 	    // can add coordinates here as well
 		defect_object.X = document.getElementById('defectDiv').getAttribute('X');
 		defect_object.Y = document.getElementById('defectDiv').getAttribute('Y');
@@ -429,8 +440,17 @@
 	}
 	
 	function submitReport() {
-		//$("#inputBox").hide();
-		var session_object = { report : session_array };
+	    //$("#inputBox").hide();
+	    var defect_complete_object = {};
+	    plantBox = $("#Plant").val();
+	    firstNameBox = $("#FirstName").val();
+	    lastNameBox = $("#LastName").val();
+	    defect_complete_object.plant = plantBox;
+	    defect_complete_object.first_name = firstNameBox;
+	    defect_complete_object.last_name = lastNameBox;
+	    defect_complete_object.analysis = session_array;
+	    var session_object = { report: defect_complete_object };
+
 		var session_json = JSON.stringify(session_object);
 		console.log(JSON.stringify(session_array));
 
