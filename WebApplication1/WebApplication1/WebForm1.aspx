@@ -11,6 +11,14 @@
     <div  id="date"></div>
     <div id="analyst"></div>
         <div id="headerInfo"></div>
+        <div id ="imageContainer" style ="display : table-row">
+            <img style="display :table-row" id ="image1" onclick ="console.log(event.pageX); console.log(event.pageY)" src ="Assets/diagram-left.jpg" />
+            <img style="display :table-row" id ="image2" onclick ="console.log(event.pageX); console.log(event.pageY)" src ="Assets/diagram-top.jpg" />
+            <img style="display :table-row" id ="image3" onclick ="console.log(event.pageX); console.log(event.pageY)" src ="Assets/diagram-right.jpg" />
+        </div>
+
+        <div style="display: table-cell" id ="tableContainer">
+
         <table id="sevOverview" border="5"    width="20%"   cellpadding="1" cellspacing="1">
        <tr>
           <th colspan="3"><h3>Severity Overview</h3>
@@ -138,8 +146,12 @@
           <td></td>
           <td></td>
        </tr>
+
     </table>
- </div>
+            </div>    
+ 
+    <div style="transform:translateX(-320px); display: table-cell" id="chartContainer" style="height: 300px; width: 100%;"></div>
+        </div>
     <form id="form1" runat="server">      
         <div id ="inputBox">
                 First name: <input type="text" id="FirstName" value=""><br>
@@ -203,6 +215,7 @@
 </body>
 </html>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+<script type="text/javascript" src="canvasjs.min.js"></script>
 <script>
     $("#car_side").hide();
     $("#defectDiv").hide();
@@ -227,9 +240,10 @@
 	var session_array = [];
 	var defects = [];
 	var strFinal = "Tops: " + tops + " Rights: " + rights + " Lefts: " + lefts;
-    
+	var defectLists = { "top": [], "right": [], "left": []};
+
     //set date
-	document.getElementById('date').innerHTML = "<b>Date:</b> " + getDate().toString();
+	document.getElementById('date').innerHTML = "Date: " + getDate().toString();
 	$("#SideVars").html(strFinal);
 	//var strArray = session_array.toString();
 	//$("#ArrayVar").html(strArray);
@@ -266,8 +280,8 @@
         $("#defectDiv").show();
         relativeMouseX = ev.pageX - document.getElementById('car_image').offsetLeft;
 		relativeMouseY = ev.pageY - document.getElementById('car_image').offsetTop - 18;
-        mouseX = ev.pageX
-        mouseY = ev.pageY
+		mouseX = ev.pageX;
+		mouseY = ev.pageY;
 
         document.getElementById('defectDiv').setAttribute('X',relativeMouseX);
         document.getElementById('defectDiv').setAttribute('Y',relativeMouseY);
@@ -288,6 +302,9 @@
                 .css('height', size)
                 .css('background-color', color)
         );
+        
+        
+        
     
         
 		adding_defect = true;
@@ -305,9 +322,11 @@
 		defect_object.X = document.getElementById('defectDiv').getAttribute('X');
 		defect_object.Y = document.getElementById('defectDiv').getAttribute('Y');
 		defects.push(defect_object);
-
+        
 	    //track totals
 		side = $("#car_side").val();
+		defectLists[side].push(defect_object);
+		
 		sevTotals[side][severity] = sevTotals[side][severity] + 1;
 		defectTotals[dType] = defectTotals[dType] + 1;
 		console.log(sevTotals[side]);
@@ -415,7 +434,53 @@
 		var session_json = JSON.stringify(session_object);
 		console.log(JSON.stringify(session_array));
 
-	    //////create report	   
+	    //////create report	  
+	    //add marks
+		var color = '#000000';
+		var size = '4px';
+		console.log(defectLists["top"]);
+		defectLists["top"].forEach(function (defect) {
+		    console.log(defect);
+		    console.log(defect.Y);
+		    console.log(defect.X);
+		    $("body").append(
+                $('<div></div>')
+                    .css('position', 'absolute')
+                    .css('top', (parseInt(defect.Y) +228).toString()+ 'px')
+                    .css('left', (parseInt(defect.X) +7).toString() + 'px')
+                    .css('width', size)
+                    .css('height', size)
+                    .css('background-color', color)
+            );
+		});
+		defectLists["right"].forEach(function (defect) {
+		    console.log(defect);
+		    console.log(defect.Y);
+		    console.log(defect.X);
+		    $("body").append(
+                $('<div></div>')
+                    .css('position', 'absolute')
+                    .css('top', (parseInt(defect.Y) + 393).toString() + 'px')
+                    .css('left', (parseInt(defect.X) + 10).toString() + 'px')
+                    .css('width', size)
+                    .css('height', size)
+                    .css('background-color', color)
+            );
+		});
+		defectLists["left"].forEach(function (defect) {
+		    console.log(defect);
+		    console.log(defect.Y);
+		    console.log(defect.X);
+		    $("body").append(
+                $('<div></div>')
+                    .css('position', 'absolute')
+                    .css('top', (parseInt(defect.Y) + 66).toString() + 'px')
+                    .css('left', (parseInt(defect.X) + 10).toString() + 'px')
+                    .css('width', size)
+                    .css('height', size)
+                    .css('background-color', color)
+            );
+		});
 	    //set analyst
 		document.getElementById('analyst').innerHTML = "Analyst: " + document.getElementById('FirstName').value + ' ' + document.getElementById('LastName').value;
 	    ////get rest of the header info
@@ -428,30 +493,30 @@
 	    //get total units
 		var totalunits = tops + rights + lefts;
 	    //get dpu
-		var dpu = totalunits / totalDefects;
+		var dpu = totalDefects / totalunits ;
 	    //set header info
 
-		document.getElementById('headerInfo').innerHTML = "<b>Start Time:</b> " + startTime + "&nbsp" + "End Time: " + endTime + "&nbsp" +
-            "Shift: " + shift + "&nbsp" + "Num of Units: " + totalunits + "&nbsp" + "Total Defects: " + totalDefects + "&nbsp" +
-            "DPU: " + dpu;
+		document.getElementById('headerInfo').innerHTML = "Start Time: " + startTime +  "   End Time: " + endTime + 
+            "   Shift: " + shift +  "   Num of Units: " + totalunits + "   Total Defects: " + totalDefects +
+            "   DPU: " + dpu.toFixed(2);
         
 	    ////create tables
 	    //sev overview
 		
 		var totalsev1 = sevTotals['top'][1] + sevTotals['right'][1] + sevTotals['left'][1];
 		var totalsev5 = sevTotals['top'][5] + sevTotals['right'][5] + sevTotals['left'][5];
-		var totalsev10 = sevTotals['top'][01] + sevTotals['right'][10] + sevTotals['left'][10];
+		var totalsev10 = sevTotals['top'][10] + sevTotals['right'][10] + sevTotals['left'][10];
 		var sevOverall = totalsev1 + totalsev5 + totalsev10;
 
 		var table = document.getElementById('sevOverview');		
 		table.rows[2].cells[1].innerHTML = totalsev1;
-		table.rows[2].cells[2].innerHTML = totalsev1 / totalunits;
+		table.rows[2].cells[2].innerHTML = (totalsev1 / totalunits).toFixed(2);
 		table.rows[3].cells[1].innerHTML = totalsev5;
-		table.rows[3].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[3].cells[2].innerHTML = (totalsev5 / totalunits).toFixed(2);
 		table.rows[4].cells[1].innerHTML = totalsev5;
-		table.rows[4].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[4].cells[2].innerHTML = (totalsev5 / totalunits).toFixed(2);
 		table.rows[5].cells[1].innerHTML = sevOverall;
-		table.rows[5].cells[2].innerHTML = sevOverall / totalunits;
+		table.rows[5].cells[2].innerHTML = (sevOverall / totalunits).toFixed(2);
 
 	    //right
 		var totalunits = rights;
@@ -462,13 +527,13 @@
 
 		var table = document.getElementById('rightTable');
 		table.rows[2].cells[1].innerHTML = totalsev1;
-		table.rows[2].cells[2].innerHTML = totalsev1 / totalunits;
+		table.rows[2].cells[2].innerHTML = (totalsev1 / totalunits).toFixed(2);
 		table.rows[3].cells[1].innerHTML = totalsev5;
-		table.rows[3].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[3].cells[2].innerHTML = (totalsev5 / totalunits).toFixed(2);
 		table.rows[4].cells[1].innerHTML = totalsev5;
-		table.rows[4].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[4].cells[2].innerHTML = (totalsev5 / totalunits).toFixed(2);
 		table.rows[5].cells[1].innerHTML = sevOverall;
-		table.rows[5].cells[2].innerHTML = sevOverall / totalunits;
+		table.rows[5].cells[2].innerHTML = (sevOverall / totalunits).toFixed(2);
 
 	    //top
 		var totalunits = tops;
@@ -479,13 +544,13 @@
 
 		var table = document.getElementById('topTable');
 		table.rows[2].cells[1].innerHTML = totalsev1;
-		table.rows[2].cells[2].innerHTML = totalsev1 / totalunits;
+		table.rows[2].cells[2].innerHTML = (totalsev1 / totalunits).toFixed(2);
 		table.rows[3].cells[1].innerHTML = totalsev5;
-		table.rows[3].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[3].cells[2].innerHTML = (totalsev5 / totalunits).toFixed(2);
 		table.rows[4].cells[1].innerHTML = totalsev5;
-		table.rows[4].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[4].cells[2].innerHTML = (totalsev5 / totalunits).toFixed(2);
 		table.rows[5].cells[1].innerHTML = sevOverall;
-		table.rows[5].cells[2].innerHTML = sevOverall / totalunits;
+		table.rows[5].cells[2].innerHTML = (sevOverall / totalunits).toFixed(2);
 
 	    //left
 		var totalunits = lefts;
@@ -496,17 +561,43 @@
 
 		var table = document.getElementById('leftTable');
 		table.rows[2].cells[1].innerHTML = totalsev1;
-		table.rows[2].cells[2].innerHTML = totalsev1 / totalunits;
+		table.rows[2].cells[2].innerHTML = (totalsev1 / totalunits).toFixed(2);
 		table.rows[3].cells[1].innerHTML = totalsev5;
-		table.rows[3].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[3].cells[2].innerHTML = (totalsev5 / totalunits).toFixed(2);
 		table.rows[4].cells[1].innerHTML = totalsev5;
-		table.rows[4].cells[2].innerHTML = totalsev5 / totalunits;
+		table.rows[4].cells[2].innerHTML = (totalsev5 / totalunits).toFixed(2);
 		table.rows[5].cells[1].innerHTML = sevOverall;
-		table.rows[5].cells[2].innerHTML = sevOverall / totalunits;
+		table.rows[5].cells[2].innerHTML = (sevOverall / totalunits).toFixed(2);
 
-		
+	    //create pie chart
+		var chart = new CanvasJS.Chart("chartContainer",
+	    {
+	        title: {
+	            text: "Defects at "+document.getElementById("Plant").value
+	        },
+	        legend: {
+	            maxWidth: 350,
+	            itemWidth: 120
+	        },
+	        data: [
+		    {
+		        type: "pie",
+		        showInLegend: true,
+		        legendText: "{indexLabel}",
+		        dataPoints: [
+				    { y: defectTotals["UNK"], indexLabel: "UNK" },
+				    { y: defectTotals["PRD"], indexLabel: "PRD" },
+				    { y: defectTotals["VIJ"], indexLabel: "VIJ" },
+				    { y: defectTotals["DMM"], indexLabel: "DMM" },
+		        ]
+		    }
+	        ]
+	    });
+		chart.render();
+
 		$("#form1").hide();
 		$("#reportContainer").show();
+		$(".reportMark").show();
 		$.ajax({
 		  url: "report.php",
                   type: "POST",
