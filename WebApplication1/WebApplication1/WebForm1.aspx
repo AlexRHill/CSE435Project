@@ -9,10 +9,10 @@
 <body>
     <form id="form1" runat="server">      
         <div id ="inputBox">
-                First name: <input type="text" name="FirstName" value="First Name"><br>
-                Last name: <input type="text" name="LastName" value="Last Name"><br>
-                Plant: <input type="text" name="Plant" value="Plant"><br>
-                Shift: <input type="text" name="Shift" value="Shift"><br>     
+                First name: <input type="text" id="FirstName" name="FirstName" value=""><br>
+                Last name: <input type="text" id="LastName" name="LastName" value=""><br>
+                Plant: <input type="text" id="Plant" name="Plant" value=""><br>
+                Shift: <input type="text" name="Shift" value=""><br>     
         </div>
 		<br>
 		<div id="SideVars">
@@ -77,6 +77,9 @@
 	var defect_count = 0;
 	var type;
 	var side;
+	var plantBox;
+	var firstNameBox;
+	var lastNameBox;
 	var dType;
 	var severity;
 	var tops = 0;
@@ -85,6 +88,8 @@
 	var adding_defect = false;
 	var session_array = [];
 	var defects = [];
+	var imageX = 0;
+	var imageY = 0;
 	var strFinal = "Tops: " + tops + " Rights: " + rights + " Lefts: " + lefts;
 	$("#SideVars").html(strFinal);
 	//var strArray = session_array.toString();
@@ -104,6 +109,9 @@
         $("#defectDiv").show();
         mouseX = ev.pageX;
         mouseY = ev.pageY;
+		var pos = $("#car_image").position();
+		imageX = mouseX - pos.left;
+		imageY = mouseY - pos.top;
         //alert(mouseX + ' ' + mouseY);
 		defect_count = defect_count + 1;
 		//defect_object = {};
@@ -131,6 +139,8 @@
 		severity = $("#defect_severity").val();
 		defect_object.type = dType;
 		defect_object.severity = severity;
+		defect_object.x = imageX;
+		defect_object.y = imageY;
 		// can add coordinates here as well
 		defects.push(defect_object);
 		$("body :last").css('background-color', 'blue');
@@ -221,6 +231,8 @@
 		strFinal = "Tops: " + tops + " Rights: " + rights + " Lefts: " + lefts;
 		$("#SideVars").html(strFinal);
 		console.log(session_array);
+		//strArray = session_array.toString();
+		//$("#ArrayVar").html(strArray);
 		clearDefects();
 		$("#car_type").val("default_type");
 		$("#car_side").val("default_side");
@@ -229,9 +241,23 @@
 	
 	function submitReport() {
 		//$("#inputBox").hide();
-		var session_object = { report : session_array };
+		var defect_complete_object = {};
+		plantBox = $("#Plant").val();
+		firstNameBox = $("#FirstName").val();
+		lastNameBox = $("#LastName").val();
+		defect_complete_object.plant = plantBox;
+		defect_complete_object.first_name = firstNameBox;
+		defect_complete_object.last_name = lastNameBox;
+		defect_complete_object.analysis = session_array;
+		var session_object = { report : defect_complete_object };
 		var session_json = JSON.stringify(session_object);
 		
+		//$.post(
+		//'report.php',
+		//{ json : session_json },
+		//function(response) {
+		//	var result = JSON.parse(response);
+		//});
 		$.ajax({
 		  url: "report.php",
                   type: "POST",
