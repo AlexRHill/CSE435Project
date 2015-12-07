@@ -1,5 +1,3 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="WebForm1.aspx.cs" Inherits="WebApplication1.WebForm1" %>
-
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -156,9 +154,19 @@
         <div id ="inputBox">
                 First name: <input type="text" id="FirstName" value=""><br>
                 Last name: <input type="text" id="LastName" value=""><br>
-                Plant: <input type="text" id="Plant" value=""><br>
-                Shift: <input type="text" id="Shift" value=""><br>     
         </div>
+		<br>
+		<label>Plant: <select id="Plant" name="Plant">  
+              <option value="LDT">Lansing Delta Township</option>
+              <option value="LGR" >Lansing Grand River</option>
+              <option value="LO" >Lake Orion Assembly</option>
+        </select></label>
+		<label>Shift: <select id="Shift" name="Shift">  
+              <option value="A">A</option>
+              <option value="B" >B</option>
+              <option value="C" >C</option>
+        </select></label>
+		<br>
 		<br>
 		<div id="SideVars">
 			Text edited.
@@ -168,16 +176,16 @@
             <select id="car_type" name="car_type" onchange="showSide()">
               
               <option value="default_type" selected="selected">Choose Vehicle</option>
-              <option value="saab" >Saab</option>
-              <option value="mercedes" >Mercedes</option>
-              <option value="audi" >Audi</option>
+              <option value="TRVRSE" >Chevrolet Traverse</option>
+              <option value="ENCLV" >Buick Enclave</option>
+              <option value="ACAD" >GMC Acadia</option>
              
             </select>
             <select id="car_side" name="car_side" onchange="showDiagram()">
               <option value="default_side" selected="selected">Choose Side</option>
-              <option value="left" >left</option>
-              <option value="top">top</option>  
-                <option value="right">right</option>               
+              <option value="left" >Left</option>
+              <option value="top">Top</option>  
+                <option value="right">Right</option>               
             </select>
         </div>
 
@@ -185,19 +193,29 @@
 			<br/>
 			<input type="button" value="Add Side to Report" runat="server" onclick="submitSide()" class="button"/>
             <br/>
+			<br/>
            
 			<img id="car_image" name="car_image" onclick="addDefect(event)" src="1" />
 		   
         </div>
         <div id="defectDiv" class="defectDiv">
             <h2>Defect</h2>
-            <!--<p contenteditable="true">Type:</p>
-            <p contenteditable="true">Severity:</p>-->
 			<select id="defect_type" name="defect_type">       
-              <option value="UNK" >UNK</option>
-              <option value="PRD" >PRD</option>
-              <option value="VIJ" >VIJ</option>
-              <option value="DMM" >DMM</option>             
+              <option value="UNK" >Unknown</option>
+              <option value="CC" >Crater Crystal</option>
+              <option value="CAP" >Crater Anti-Perspirant</option>
+              <option value="FB" >Fiber Blue</option>
+              <option value="FW" >Fiber White</option>
+              <option value="FY" >Fiber Yellow</option>
+              <option value="WB" >Weld Ball</option>
+              <option value="PD" >Prime Defect</option>
+			  <option value="MP" >Metal Pop</option>
+              <option value="INS" >Insect</option>
+              <option value="BSD" >Body Shop Defect</option>
+              <option value="SD" >Skid Dirt</option>
+              <option value="OD" >Oven Dirt</option>
+              <option value="CCP" >Clear Coat Pop</option>
+              <option value="CCD" >Clear Coat Drip</option>
             </select>
             <select id="defect_severity" name="defect_severity">
               <option value="1" >1</option>
@@ -207,8 +225,6 @@
 			<input type="button" value="Add Defect" runat="server" onclick="addDefectToList()" class="button">
 			<input type="button" value="Undo" runat="server" onclick="undoDefect()" class="button">
         </div>
-		
-		<!--<input type="button" value="Add Side to Report" runat="server" onclick="submitSide()" class="button">-->
 		<br>
 		<input type="button" value="Submit" runat="server" onclick="submitReport()" class="button">
     </form>
@@ -227,7 +243,7 @@
 	startTime = startTime.split(':')[0] + ':' + startTime.split(':')[1] + ' ' + startTime.split(' ')[1];
 	var totalDefects = 0;
 	var sevTotals = {"top": {1:0, 5:0, 10:0 }, "left" : {1:0, 5:0, 10:0 }, "right": {1:0, 5:0, 10:0 }};
-	var defectTotals = {"UNK":0,"PRD":0,"VIJ":0,"DMM":0};
+	var defectTotals = {"UNK":0,"CC":0,"CAP":0,"FB":0,"FW":0,"FY":0,"WB":0,"PD":0,"MP":0,"INS":0,"BSD":0,"SD":0,"OD":0,"CCP":0,"CCD":0};
 	var defect_count = 0;
 	var type;
 	var side;
@@ -252,6 +268,8 @@
 	//var strArray = session_array.toString();
 	//$("#ArrayVar").html(strArray);
     //var portion_array = [];
+	
+
 
 	function getDate() {
 	    var now = new Date();
@@ -336,7 +354,13 @@
     function showDiagram() {	
 		type = $("#car_type").val();
 		side = $("#car_side").val();
-		if (type === "saab") {
+		if (type === "default_type" || side === "default_side") {
+		    $("#car_image").attr("src", "Assets/placeholder.jpg");
+			adding_defect = true;
+		}
+		else {
+		adding_defect = false;
+		if (type === "TRVRSE") {
 			if (side === "left") {
 				$("#car_image").attr("src", "Assets/diagram-left.jpg");
 			}
@@ -347,7 +371,7 @@
 				$("#car_image").attr("src", "Assets/diagram-right.jpg");
 			}
 		}
-		else if (type === "mercedes") {
+		else if (type === "ENCLV") {
 			if (side === "left") {
 				$("#car_image").attr("src", "Assets/diagram-left.jpg");
 			}
@@ -358,7 +382,7 @@
 				$("#car_image").attr("src", "Assets/diagram-right.jpg");
 			}
 		}
-	    else if (type === "audi") {
+	    else if (type === "ACAD") {
 			if (side === "left") {
 				$("#car_image").attr("src", "Assets/diagram-left.jpg");
 			}
@@ -369,7 +393,7 @@
 				$("#car_image").attr("src", "Assets/diagram-right.jpg");
 			}
 		}
-		
+		}
 		clearDefects();
 		
         $("#diagramDiv").show();
@@ -599,18 +623,26 @@
 		        legendText: "{indexLabel}",
 		        dataPoints: [
 				    { y: defectTotals["UNK"], indexLabel: "UNK" },
-				    { y: defectTotals["PRD"], indexLabel: "PRD" },
-				    { y: defectTotals["VIJ"], indexLabel: "VIJ" },
-				    { y: defectTotals["DMM"], indexLabel: "DMM" },
+				    { y: defectTotals["CC"], indexLabel: "CC" },
+				    { y: defectTotals["CAP"], indexLabel: "CAP" },
+				    { y: defectTotals["FB"], indexLabel: "FB" },
+					{ y: defectTotals["FW"], indexLabel: "FW" },
+					{ y: defectTotals["FY"], indexLabel: "FY" },
+					{ y: defectTotals["WB"], indexLabel: "WB" },
+					{ y: defectTotals["PD"], indexLabel: "PD" },
+					{ y: defectTotals["MP"], indexLabel: "MP" },
+					{ y: defectTotals["INS"], indexLabel: "INS" },
+					{ y: defectTotals["BSD"], indexLabel: "BSD" },
+					{ y: defectTotals["SD"], indexLabel: "SD" },
+					{ y: defectTotals["OD"], indexLabel: "OD" },
+					{ y: defectTotals["CCP"], indexLabel: "CCP" },
+					{ y: defectTotals["CCD"], indexLabel: "CCD" },
 		        ]
 		    }
 	        ]
 	    });
 		chart.render();
 
-		//$("#form1").hide();
-		//$("#reportContainer").show();
-		//$(".reportMark").show();
 		$.ajax({
 		  url: "report.php",
                   type: "POST",
